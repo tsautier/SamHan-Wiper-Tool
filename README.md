@@ -1,4 +1,4 @@
-# rust-wiper (cross-platform CLI + GUI)
+# SamHan-Rust-Wiper (cross-platform CLI + GUI)
 
 Prototype Rust project providing both a CLI and a minimal GUI for safely *simulating* disk wipe operations.
 **THIS IS A PROTOTYPE - BY DEFAULT IT DOES NOT DESTROY DATA (dry-run).**
