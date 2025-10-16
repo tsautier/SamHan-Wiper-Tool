@@ -1,0 +1,19 @@
+[package]
+name = "rust-wiper"
+version = "0.2.0"
+edition = "2021"
+authors = ["Thomas Sautier <thomas.sautier@samhan.fr>"]
+description = "Safe disk wiper CLI + GUI (Rust) — cross-platform prototype (dry-run default)"
+license = "MIT"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+chrono = "0.4"
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+regex = "1.10"
+which = "4.4"
+
+# GUI dependencies (eframe/egui)
+eframe = "0.23"
+rfd = "0.9" # file dialogs
