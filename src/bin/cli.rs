@@ -1,12 +1,12 @@
-use clap::Parser;
 use anyhow::Result;
 use chrono::Local;
-use std::process;
+use clap::Parser;
 use std::env;
+use std::process;
 
-use rust_wiper::validate_device;
 use rust_wiper::interactive_confirm;
 use rust_wiper::simulate_command;
+use rust_wiper::validate_device;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about = "rust-wiper CLI (dry-run default)")]
@@ -20,7 +20,7 @@ struct Args {
     method: String,
 
     /// Number of passes (only for dd)
-    #[arg(short='n', long, default_value_t = 1)]
+    #[arg(short = 'n', long, default_value_t = 1)]
     passes: u8,
 
     /// Dry-run default: shows commands but does not execute.
@@ -52,7 +52,11 @@ fn main() -> Result<()> {
     if args.list {
         #[cfg(unix)]
         {
-            let out = std::process::Command::new("lsblk").arg("-o").arg("NAME,SIZE,TYPE,MOUNTPOINT,MODEL").arg("-J").output()?;
+            let out = std::process::Command::new("lsblk")
+                .arg("-o")
+                .arg("NAME,SIZE,TYPE,MOUNTPOINT,MODEL")
+                .arg("-J")
+                .output()?;
             println!("{}", String::from_utf8_lossy(&out.stdout));
             return Ok(());
         }
@@ -63,7 +67,10 @@ fn main() -> Result<()> {
         }
     }
 
-    let device = args.device.as_ref().ok_or_else(|| anyhow::anyhow!("--device is required for wipe operations"))?;
+    let device = args
+        .device
+        .as_ref()
+        .ok_or_else(|| anyhow::anyhow!("--device is required for wipe operations"))?;
     validate_device(device)?;
 
     // Safety: require env var for execution
@@ -81,17 +88,34 @@ fn main() -> Result<()> {
     match args.method.as_str() {
         "dd" => {
             for p in 1..=args.passes {
-                let cmd = format!("dd if=/dev/urandom of={} bs=4M status=progress (pass {}/{})", device, p, args.passes);
+                let cmd = format!(
+                    "dd if=/dev/urandom of={} bs=4M status=progress (pass {}/{})",
+                    device, p, args.passes
+                );
                 simulate_command(&cmd, dry)?;
             }
-            simulate_command(&format!("dd if=/dev/zero of={} bs=4M status=progress (final)", device), dry)?;
+            simulate_command(
+                &format!(
+                    "dd if=/dev/zero of={} bs=4M status=progress (final)",
+                    device
+                ),
+                dry,
+            )?;
         }
         "blkdiscard" => {
             simulate_command(&format!("blkdiscard {}", device), dry)?;
         }
         "hdparm" => {
-            simulate_command(&format!("hdparm -I {} && hdparm --user-master u --security-set-pass p {}", device, device), dry)?;
-            println!("Note: hdparm flow is printed but not automatically executed by this prototype.");
+            simulate_command(
+                &format!(
+                    "hdparm -I {} && hdparm --user-master u --security-set-pass p {}",
+                    device, device
+                ),
+                dry,
+            )?;
+            println!(
+                "Note: hdparm flow is printed but not automatically executed by this prototype."
+            );
         }
         "nvme" => {
             simulate_command(&format!("nvme sanitize {} --ses 1", device), dry)?;

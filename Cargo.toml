@@ -6,6 +6,10 @@ authors = ["Thomas Sautier <thomas.sautier@samhan.fr>"]
 description = "Safe disk wiper CLI + GUI (Rust) — cross-platform prototype (dry-run default)"
 license = "MIT"
 
+[features]
+default = []
+gui = ["dep:eframe", "dep:rfd"]
+
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }
 chrono = "0.4"
@@ -15,5 +19,14 @@ regex = "1.10"
 which = "4.4"
 
 # GUI dependencies (eframe/egui)
-eframe = "0.23"
-rfd = "0.9" # file dialogs
+eframe = { version = "0.23", optional = true }
+rfd = { version = "0.9", optional = true } # file dialogs
+
+[[bin]]
+name = "rust-wiper-cli"
+path = "src/bin/cli.rs"
+
+[[bin]]
+name = "rust-wiper-gui"
+path = "src/bin/gui.rs"
+required-features = ["gui"]

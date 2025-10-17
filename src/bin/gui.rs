@@ -1,8 +1,8 @@
+use anyhow::Result;
 use eframe::{egui, epi};
 use rfd::FileDialog;
-use anyhow::Result;
+use rust_wiper::{interactive_confirm, simulate_command, validate_device};
 use std::env;
-use rust_wiper::{validate_device, interactive_confirm, simulate_command};
 
 struct WiperApp {
     device: String,
@@ -27,7 +27,9 @@ impl Default for WiperApp {
 }
 
 impl epi::App for WiperApp {
-    fn name(&self) -> &str { "rust-wiper GUI" }
+    fn name(&self) -> &str {
+        "rust-wiper GUI"
+    }
 
     fn update(&mut self, ctx: &egui::Context, _frame: &epi::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
