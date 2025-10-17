@@ -18,22 +18,22 @@ Prototype Rust project providing both a CLI and a minimal GUI for safely *simula
 If any of these are missing the program will only perform a dry-run showing the commands.
 
 ## Build (Linux / macOS / Windows)
-Install Rust toolchain (rustup). For GUI builds eframe requires a native linker and a GUI toolchain:
+Install Rust toolchain (rustup). The CLI builds without extra system dependencies. The GUI is optional and requires native windowing libraries; enable it with the `gui` cargo feature.
 
 ### macOS
 ```bash
 rustup default stable
-# build CLI
+# build CLI (default)
 cargo build --release --bin rust-wiper-cli
 # build GUI (requires macOS system libs)
-cargo build --release --bin rust-wiper-gui
+cargo build --release --features gui --bin rust-wiper-gui
 ```
 
 ### Windows (MSVC)
 Install Visual Studio Build Tools (C++) and rustup toolchain with msvc. Then:
 ```powershell
 cargo build --release --bin rust-wiper-cli
-cargo build --release --bin rust-wiper-gui
+cargo build --release --features gui --bin rust-wiper-gui
 ```
 
 ### Notes
@@ -59,7 +59,7 @@ sudo cargo run --bin rust-wiper-cli -- --device /dev/sdX --method dd --passes 1 
 
 ### GUI
 ```bash
-cargo run --bin rust-wiper-gui
+cargo run --features gui --bin rust-wiper-gui
 ```
 
 ## Limitations
